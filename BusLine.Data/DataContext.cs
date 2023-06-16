@@ -23,11 +23,11 @@ namespace BusLine.Data
             builder.Entity<ScheduleUser>().HasOne(su => su.schedule).WithMany(su=> su.scheduleUsers).HasForeignKey(su=>su.ScheduleId).OnDelete(DeleteBehavior.Cascade);
             builder.Entity<ScheduleUser>().HasOne(su => su.user).WithMany(su => su.ScheduleUsers).HasForeignKey(su=>su.UserId).OnDelete(DeleteBehavior.SetNull);
 
-            builder.Entity<Travel>().HasKey( su => su.Id );
-            builder.Entity<Travel>().HasOne(su => su.Schedule).WithMany(su => su.travels).HasForeignKey(su => su.ScheduleId).OnDelete(DeleteBehavior.Cascade);
-            builder.Entity<Travel>().HasOne(su => su.Bus).WithMany(su => su.travels).HasForeignKey(su => su.BusId).OnDelete(DeleteBehavior.SetNull);
+            //builder.Entity<Travel>().HasKey(su => su.Id);
+            //builder.Entity<Travel>().HasOne(su => su.Schedule).WithMany(su => su.travels).HasForeignKey(su => su.ScheduleId).OnDelete(DeleteBehavior.Cascade);
+            //builder.Entity<Travel>().HasOne(su => su.Bus).WithMany(su => su.travels).HasForeignKey(su => su.BusId).OnDelete(DeleteBehavior.SetNull);
 
-       
+
 
         }
 

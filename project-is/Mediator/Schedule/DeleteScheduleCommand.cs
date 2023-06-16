@@ -11,6 +11,11 @@ namespace project_is.Mediator.Schedule
     public class DeleteScheduleHandler : IRequestHandler<DeleteScheduleCommand, Result<bool>>
     {
         private readonly IUnitOfWork unitOfWork;
+        public DeleteScheduleHandler(IUnitOfWork unitOfWork)
+        {
+            this.unitOfWork = unitOfWork;
+        }
+
         public async Task<Result<bool>> Handle(DeleteScheduleCommand request, CancellationToken cancellationToken)
         {
             var res = await unitOfWork.scheduleRepository.GetByIdAsync(request.id);

@@ -1,4 +1,5 @@
-﻿using BusLine.Data.Models;
+﻿using BusLine.Contracts.Models.Schedule.Response;
+using BusLine.Data.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,5 +10,6 @@ namespace BusLine.Infrastructure.Interfaces
 {
     public interface ITravelRepository : IRepository<Travel>
     {
+        Task<List<ScheduleResponse>> DriverSchedule(string Id);
     }
 }

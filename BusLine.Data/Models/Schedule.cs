@@ -12,10 +12,8 @@ namespace BusLine.Data.Models
     {
         [Key]
         public int Id { get; set; }
-        [NotMapped]
-        public TimeOnly ArrivalTime { get; set; }
-        [NotMapped]
-        public TimeOnly DepartureTime { get; set; }
+        public string ArrivalTime { get; set; }
+        public string DepartureTime { get; set; }
         public int Platform { get; set; }
         public string Day { get; set; }
         public bool Direction { get; set; }
@@ -24,7 +22,6 @@ namespace BusLine.Data.Models
         public BusLine BusLine { get; set; }
 
         public List<ScheduleUser> scheduleUsers { get; set; }
-        public List<Travel> travels { get; set; }
         
     }
 }

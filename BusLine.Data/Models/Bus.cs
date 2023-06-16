@@ -16,6 +16,5 @@ namespace BusLine.Data.Models
         public bool AirConditioner { get; set; }
         public int SeatsNumber { get; set; }
         public string Year { get; set; }
-        public List<Travel>? travels { get; set; }
     }
 }

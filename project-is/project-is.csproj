@@ -11,6 +11,7 @@
     <PackageReference Include="AutoMapper" Version="12.0.1" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
     <PackageReference Include="MediatR" Version="12.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.18" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.16" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.16">
       <PrivateAssets>all</PrivateAssets>
@@ -27,7 +28,6 @@
   <ItemGroup>
     <Folder Include="Extensions\" />
     <Folder Include="Exceptions\" />
-    <Folder Include="Mediator\User\" />
     <Folder Include="Middleware\" />
   </ItemGroup>
 

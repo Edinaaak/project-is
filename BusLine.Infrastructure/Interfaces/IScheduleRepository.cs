@@ -9,5 +9,8 @@ namespace BusLine.Infrastructure.Interfaces
 {
     public interface IScheduleRepository : IRepository<Schedule>
     {
+        Task<List<Schedule>> GetWithBusline();
+
+       
     }
 }

@@ -3,9 +3,12 @@ using BusLine.Data.Models;
 using BusLine.Infrastructure;
 using BusLine.Infrastructure.Interfaces;
 using BusLine.Infrastructure.Repositories;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using project_is.Mapping;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,13 +35,36 @@ builder.Services.AddScoped<IScheduleUserRepository, ScheduleUserRepository>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddMediatR(opt => opt.RegisterServicesFromAssemblyContaining(typeof(Program)));
+builder.Services.AddAuthentication(options =>
 
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+
+
+}
+)
+.AddJwtBearer(opt =>
+{
+    opt.SaveToken = true;
+    opt.RequireHttpsMetadata = false;
+    opt.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+    {
+        ValidateAudience = true,
+        ValidateIssuer = true,
+        ValidAudience = "http://localhost:5001",
+        ValidIssuer = "https://localhost:5001",
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("78fUjkyzfLz56gTK"))
+    };
+
+});
 
 
 var app = builder.Build();
 
 
-app.UseCors(opt => opt.AllowAnyHeader().AllowAnyMethod().AllowAnyHeader());
+
 
 using (var serviceScope = app.Services.CreateScope())
 {
@@ -71,6 +97,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+app.UseCors(opt => opt.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
 
 app.MapControllers();
 

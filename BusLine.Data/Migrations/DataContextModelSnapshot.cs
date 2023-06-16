@@ -143,10 +143,18 @@ namespace BusLine.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
+                    b.Property<string>("ArrivalTime")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("BusLineId")
                         .HasColumnType("int");
 
                     b.Property<string>("Day")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DepartureTime")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -477,12 +485,11 @@ namespace BusLine.Data.Migrations
             modelBuilder.Entity("BusLine.Data.Models.Travel", b =>
                 {
                     b.HasOne("BusLine.Data.Models.Bus", "Bus")
-                        .WithMany("travels")
-                        .HasForeignKey("BusId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .WithMany()
+                        .HasForeignKey("BusId");
 
                     b.HasOne("BusLine.Data.Models.Schedule", "Schedule")
-                        .WithMany("travels")
+                        .WithMany()
                         .HasForeignKey("ScheduleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -543,16 +550,9 @@ namespace BusLine.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("BusLine.Data.Models.Bus", b =>
-                {
-                    b.Navigation("travels");
-                });
-
             modelBuilder.Entity("BusLine.Data.Models.Schedule", b =>
                 {
                     b.Navigation("scheduleUsers");
-
-                    b.Navigation("travels");
                 });
 
             modelBuilder.Entity("BusLine.Data.Models.User", b =>

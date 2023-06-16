@@ -9,11 +9,13 @@ namespace BusLine.Contracts.Models.Schedule.Request
 {
     public class ScheduleCreateRequest
     {
-        public TimeOnly ArrivalTime { get; set; }
-        public TimeOnly DepartureTime { get; set; }
+        public string ArrivalTime { get; set; }
+        public string DepartureTime { get; set; }
         public int Platform { get; set; }
         public string Day { get; set; }
         public bool Direction { get; set; }
         public int BusLineId { get; set; }
+
+        public string DriverId { get; set; }
     }
 }
