@@ -46,13 +46,13 @@ namespace project_is.Controllers
 
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        [HttpDelete]
+        public async Task<IActionResult> Delete([FromQuery] ScheduleUserDeleteRequest request)
         {
-            var result = await mediator.Send(new DeleteScheduleUserCommand(id));
-            if(result.IsSuccess)
-                return Ok(result.IsSuccess);
-            return BadRequest(result.Errors.FirstOrDefault());
+            var result = await scheduleUserRepository.DeleteDriverFromSchedule(request.IdUser, request.IdSchedule);
+            if (result)
+                return Ok(result);
+            return BadRequest(new { msg = "can not delete this driver" });
         }
 
         [HttpPut("{id}")]

@@ -27,7 +27,7 @@ namespace project_is.Mediator.User
             {
                 return new Result<LoginResponse>
                 {
-                    Errors = new List<string> { "nije ok" },
+                    Errors = new List<string> { result.error },
                     IsSuccess = false
                 };
 

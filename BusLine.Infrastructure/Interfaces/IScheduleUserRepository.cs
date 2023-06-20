@@ -10,6 +10,8 @@ namespace BusLine.Infrastructure.Interfaces
 {
     public interface IScheduleUserRepository : IRepository<ScheduleUser>
     {
-        Task<string> checkAvailability(ScheduUserCheckRequest request);
+        Task<bool> checkAvailability(ScheduUserCheckRequest request);
+
+        Task<bool> DeleteDriverFromSchedule(string driverId, int scheduleId);
     }
 }

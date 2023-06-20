@@ -35,7 +35,8 @@ namespace project_is.Mapping
             CreateMap<RegisterRequest, User>();
             CreateMap<User, UserResponse>();
             CreateMap<UserUpdateRequest, User>();
-
+            CreateMap<MalfunctionCreateRequest, Malfunction>();
+            CreateMap<TravelUpdateRequest, Travel>();
         }
     }
 }

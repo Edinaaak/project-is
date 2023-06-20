@@ -14,5 +14,8 @@ namespace BusLine.Infrastructure.Interfaces
         public Task<UserResponse> register(RegisterRequest request);
         public Task<LoginResponse> login(LoginRequest request);
         public Task<IList<User>> getDriver();
+
+        public Task<bool> ForgotPassword(string email);
+        public Task<bool> ResetPassword(ResetPasswordRequest request);
     }
 }

@@ -1,4 +1,5 @@
-﻿using BusLine.Data.Models;
+﻿using BusLine.Contracts.Models.Malfunction.Request;
+using BusLine.Data.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,5 +10,6 @@ namespace BusLine.Infrastructure.Interfaces
 {
     public interface IMalfunctionRepository : IRepository<Malfunction>
     {
+        Task<bool> ReportFault(MalfunctionCreateRequest request);
     }
 }

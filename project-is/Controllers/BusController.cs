@@ -1,7 +1,10 @@
 ﻿using BusLine.Contracts.Models.Bus.BusRequest;
 using BusLine.Contracts.Models.Bus.Request;
+using BusLine.Contracts.Models.Malfunction.Request;
+using BusLine.Infrastructure;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ActionConstraints;
 using project_is.Mediator.Bus;
 
 namespace project_is.Controllers
@@ -11,9 +14,11 @@ namespace project_is.Controllers
     public class BusController : ControllerBase
     {
         private readonly IMediator mediator;
-        public BusController(IMediator mediator)
+        private readonly IUnitOfWork unitOfWork;
+        public BusController(IMediator mediator, IUnitOfWork unitOfWork)
         {
             this.mediator = mediator;
+            this.unitOfWork = unitOfWork;
         }
 
         [HttpGet]
@@ -59,5 +64,22 @@ namespace project_is.Controllers
                 return BadRequest(result.Errors.FirstOrDefault());
             return Ok(result.IsSuccess);
         }
+
+        [HttpGet("busDriver/{id}")]
+        public async Task<IActionResult> busesDriver(string id)
+        {
+            var list = await unitOfWork.busRepository.getBusesForDriver(id);
+            return Ok(list);
+        }
+
+        [HttpPost("report-failure")]
+        public async Task<IActionResult> report([FromBody] MalfunctionCreateRequest request)
+        {
+            var result = await unitOfWork.malfunctionRepository.ReportFault(request);
+            if(result)
+                return Ok(result);
+            return BadRequest(result);
+        }
+
     }
 }

@@ -5,11 +5,14 @@ using BusLine.Data;
 using BusLine.Data.Models;
 using BusLine.Infrastructure.Interfaces;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Net;
+using System.Net.Mail;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -28,6 +31,8 @@ namespace BusLine.Infrastructure.Repositories
             this.trravelRepository = trravelRepository;
         }
 
+       
+
         public async Task<IList<User>> getDriver()
         {
             var listDrivers = await userManager.GetUsersInRoleAsync("Driver");
@@ -37,7 +42,7 @@ namespace BusLine.Infrastructure.Repositories
         public async Task<LoginResponse> login(LoginRequest request)
         {
 
-            var user = await userManager.FindByEmailAsync(request.Email);
+            var user = await userManager.Users.Where(x => x.Email == request.Email).FirstOrDefaultAsync();
             if (user == null)
             {
                 return new LoginResponse { error = "User with this email does not exist " };
@@ -98,6 +103,43 @@ namespace BusLine.Infrastructure.Repositories
             }
             var userMapped = mapper.Map<UserResponse>(user);
             return userMapped;
+        }
+
+        public async Task<bool> ForgotPassword(string email)
+        {
+            var user = await userManager.FindByEmailAsync(email);
+            var token = await userManager.GeneratePasswordResetTokenAsync(user);
+            string to = user.Email;
+            string from = "softnalog@gmail.com";
+            MailMessage message = new MailMessage(from, to);
+            string mailBody = $"Hi {user.Name} {user.Surname}, <br> If you want to reset your password, click here! http://localhost:4200/change-password?Id={user.Id}&token={token}";
+            message.Body = mailBody;
+            message.BodyEncoding = Encoding.UTF8;
+            message.IsBodyHtml = true;
+            SmtpClient client = new SmtpClient("smtp.gmail.com", 587);
+            NetworkCredential credential = new NetworkCredential("naprednebaze@gmail.com", "nwoouozmlgrmyqyr");
+            client.EnableSsl = true;
+            client.UseDefaultCredentials = false;
+            client.Credentials = credential;
+            try
+            {
+                client.Send(message);
+                return true;
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+
+            }
+        }
+        public async Task<bool> ResetPassword(ResetPasswordRequest request)
+        {
+            var user = await userManager.FindByIdAsync(request.IdUser);
+            var token = await userManager.GeneratePasswordResetTokenAsync(user);
+            var result = await userManager.ResetPasswordAsync(user, token, request.NewPassword);
+            if(result.Succeeded)
+                return true;
+            return false;
         }
     }
 }

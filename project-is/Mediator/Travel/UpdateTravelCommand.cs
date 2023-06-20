@@ -6,7 +6,7 @@ using MediatR;
 
 namespace project_is.Mediator.Travel
 {
-    public record UpdateTravelCommand (TravelCreateRequest request, int id) : IRequest<Result<bool>>
+    public record UpdateTravelCommand (TravelUpdateRequest request, int id) : IRequest<Result<bool>>
     {
     }
 
@@ -29,7 +29,7 @@ namespace project_is.Mediator.Travel
                     Errors = new List<string> { "this travel is not found" },
                     IsSuccess = false,
                 };
-            mapper.Map<TravelCreateRequest, BusLine.Data.Models.Travel>(request.request, travel);
+            mapper.Map<TravelUpdateRequest, BusLine.Data.Models.Travel>(request.request, travel);
             var res = await unitOfWork.CompleteAsync();
             if(res)
                 return new Result<bool> { IsSuccess = true };

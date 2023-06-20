@@ -55,7 +55,7 @@ namespace project_is.Controllers
             var result = await mediator.Send(new UpdateUserCommand(request, id));
             if(result.IsSuccess)
             {
-                return Ok(result.IsSuccess);
+                return Ok(result.Data);
             }
             return BadRequest(result.Errors.FirstOrDefault());
         }
@@ -65,6 +65,24 @@ namespace project_is.Controllers
         {
             var list = await userRepository.getDriver();
             return Ok(list);
+        }
+
+        [HttpPost("forgot-password")]
+        public async Task<IActionResult> forgotPassword([FromQuery]string email)
+        {
+            var result = await mediator.Send(new ForgotPasswordCommand(email));
+            if(result.IsSuccess)
+                return Ok(result.IsSuccess);
+            return BadRequest(result.Errors.FirstOrDefault());
+        }
+
+        [HttpPost("reset-password")]
+        public async Task<IActionResult> resetPassword([FromBody] ResetPasswordRequest request)
+        {
+            var result = await mediator.Send(new ResetPasswordCommand(request));
+            if(result.IsSuccess)
+                return Ok(result.IsSuccess);
+            return BadRequest(result.Errors.FirstOrDefault());
         }
     }
 }

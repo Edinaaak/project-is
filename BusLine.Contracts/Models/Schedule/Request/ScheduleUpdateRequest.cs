@@ -13,7 +13,5 @@ namespace BusLine.Contracts.Models.Schedule.Request
         public string DepartureTime { get; set; }
         public int Platform { get; set; }
         public string Day { get; set; }
-        public bool Direction { get; set; }
-        public int BusLineId { get; set; }
     }
 }

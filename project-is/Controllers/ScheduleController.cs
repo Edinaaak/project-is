@@ -1,4 +1,5 @@
 ﻿using BusLine.Contracts.Models.Schedule.Request;
+using BusLine.Infrastructure;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using project_is.Mediator.Schedule;
@@ -10,9 +11,11 @@ namespace project_is.Controllers
     public class ScheduleController : ControllerBase
     {
         private readonly IMediator mediator;
-        public ScheduleController(IMediator mediator)
+        private readonly IUnitOfWork unitOfWork;
+        public ScheduleController(IMediator mediator, IUnitOfWork unitOfWork)
         {
             this.mediator = mediator;
+            this.unitOfWork = unitOfWork;
         }
 
         [HttpGet]
@@ -34,9 +37,9 @@ namespace project_is.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] ScheduleCreateRequest request)
+        public async Task<IActionResult> Create([FromBody] ScheduleDriverRequest request)
         {
-            var  result  = await mediator.Send(new CreateScheduleCommand(request));
+            var  result  = await mediator.Send(new CreateScheduleCommand(request.request, request.DriverList));
             if(result.IsSuccess)
                 return Ok(result.IsSuccess);
             return BadRequest(result.Errors.FirstOrDefault());
@@ -52,13 +55,19 @@ namespace project_is.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, [FromBody] ScheduleUpdateRequest request)
+        public async Task<IActionResult> Update([FromBody] ScheduleDriverUpdateRequest request, int id)
         {
-            var result = await mediator.Send(new UpdateScheduleCommand(request, id));
+            var result = await mediator.Send(new UpdateScheduleCommand(request.request, request.DriverList,id ));
             if(result.IsSuccess)
                 return Ok(result.IsSuccess);
             return BadRequest(result.Errors.FirstOrDefault());
         }
 
+        [HttpGet("schedule-user/{id}")]
+        public async Task<IActionResult> getScheduleWithDrivers(int id)
+        {
+            var list = await unitOfWork.scheduleRepository.GetWithDrivers(id);
+            return Ok(list);
+        }
     }
 }

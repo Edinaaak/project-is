@@ -51,7 +51,7 @@ namespace project_is.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, [FromBody] TravelCreateRequest request)
+        public async Task<IActionResult> Update(int id, [FromBody] TravelUpdateRequest request)
         {
             var result = await mediator.Send(new UpdateTravelCommand(request, id));
             if (result.IsSuccess)
