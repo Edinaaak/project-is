@@ -29,6 +29,16 @@ namespace project_is.Mediator.Travel
                     Errors = new List<string> { "this travel is not found" },
                     IsSuccess = false,
                 };
+            var travelList = await unitOfWork.travelRepository.GetTravelsByBus(request.request.BusId);
+            foreach(var travelInList in travelList)
+            {
+                if (travelInList.TravelDate == request.request.TravelDate)
+                    return new Result<bool>
+                    {
+                        Errors = new List<string> { "This bus is busy for that date" },
+                        IsSuccess = false,
+                    };
+            }
             mapper.Map<TravelUpdateRequest, BusLine.Data.Models.Travel>(request.request, travel);
             var res = await unitOfWork.CompleteAsync();
             if(res)

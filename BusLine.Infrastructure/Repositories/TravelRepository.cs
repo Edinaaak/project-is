@@ -28,5 +28,11 @@ namespace BusLine.Infrastructure.Repositories
             return list;
 
         }
+
+        public async Task<List<Travel>> GetTravelsByBus(int id)
+        {
+            var travelList = await context.travels.Where( x => x.BusId == id).ToListAsync();
+            return travelList;
+        }
     }
 }

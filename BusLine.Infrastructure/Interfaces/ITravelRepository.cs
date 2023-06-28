@@ -11,5 +11,6 @@ namespace BusLine.Infrastructure.Interfaces
     public interface ITravelRepository : IRepository<Travel>
     {
         Task<List<ScheduleResponse>> DriverSchedule(string Id);
+        Task<List<Travel>> GetTravelsByBus(int id);
     }
 }

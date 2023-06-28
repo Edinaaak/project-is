@@ -112,7 +112,7 @@ namespace BusLine.Infrastructure.Repositories
             string to = user.Email;
             string from = "softnalog@gmail.com";
             MailMessage message = new MailMessage(from, to);
-            string mailBody = $"Hi {user.Name} {user.Surname}, <br> If you want to reset your password, click here! http://localhost:4200/change-password?Id={user.Id}&token={token}";
+            string mailBody = $"Hi {user.Name} {user.Surname}, <br> If you want to reset your password, click here! http://edinaku-001-site1.htempurl.com/change-password?Id={user.Id}&token={token}";
             message.Body = mailBody;
             message.BodyEncoding = Encoding.UTF8;
             message.IsBodyHtml = true;

@@ -14,11 +14,9 @@ namespace project_is.Controllers
     public class BusController : ControllerBase
     {
         private readonly IMediator mediator;
-        private readonly IUnitOfWork unitOfWork;
-        public BusController(IMediator mediator, IUnitOfWork unitOfWork)
+        public BusController(IMediator mediator)
         {
             this.mediator = mediator;
-            this.unitOfWork = unitOfWork;
         }
 
         [HttpGet]
@@ -68,17 +66,19 @@ namespace project_is.Controllers
         [HttpGet("busDriver/{id}")]
         public async Task<IActionResult> busesDriver(string id)
         {
-            var list = await unitOfWork.busRepository.getBusesForDriver(id);
-            return Ok(list);
+            var list = await mediator.Send(new getBusesForDriverQuery(id));
+            if(list.IsSuccess) 
+                return Ok(list.Data);
+            return BadRequest(list.Errors.FirstOrDefault());
         }
 
         [HttpPost("report-failure")]
         public async Task<IActionResult> report([FromBody] MalfunctionCreateRequest request)
         {
-            var result = await unitOfWork.malfunctionRepository.ReportFault(request);
-            if(result)
-                return Ok(result);
-            return BadRequest(result);
+            var result = await mediator.Send(new ReportFailureCommand(request));
+            if(result.IsSuccess)
+                return Ok(result.IsSuccess);
+            return BadRequest(result.IsSuccess);
         }
 
     }

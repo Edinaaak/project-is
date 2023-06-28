@@ -11,11 +11,9 @@ namespace project_is.Controllers
     public class TicketController : ControllerBase
     {
         private readonly IMediator mediator;
-        private readonly ITicketRepository ticketRepository;
-        public TicketController(IMediator mediator, ITicketRepository ticketRepository)
+        public TicketController(IMediator mediator)
         {
             this.mediator = mediator;
-            this.ticketRepository = ticketRepository;
         }
 
         [HttpGet]
@@ -63,17 +61,17 @@ namespace project_is.Controllers
         [HttpPost("add-ticket")]
         public async Task<IActionResult> reserved([FromBody] TicketReserveRequest request)
         {
-            var result = await ticketRepository.ReserveTicket(request.numTicket, request.travelId);
-            if(!string.IsNullOrEmpty(result.Error))
-                return BadRequest(result.Error);
-            return Ok(result);
+            var result = await mediator.Send(new TicketReserveCommand(request));    
+            if(result.IsSuccess)
+                return Ok(result.Data);
+            return BadRequest(result.Errors.FirstOrDefault());
         }
 
         [HttpGet("seats/{id}")]
         public async Task<IActionResult> getSeats(int id)
         {
-            var num = await ticketRepository.GetFreeSeat(id);
-            return Ok(num); 
+            var result = await mediator.Send(new GetSeatsQuery(id));
+            return Ok(result.Data); 
         }
     }
 }

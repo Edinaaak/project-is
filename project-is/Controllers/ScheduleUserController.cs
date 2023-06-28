@@ -12,11 +12,9 @@ namespace project_is.Controllers
     public class ScheduleUserController : ControllerBase
     {
         private readonly IMediator mediator;
-        private readonly IScheduleUserRepository scheduleUserRepository;
-        public ScheduleUserController(IMediator mediator, IScheduleUserRepository scheduleUserRepository)
+        public ScheduleUserController(IMediator mediator)
         {
             this.mediator = mediator;
-            this.scheduleUserRepository = scheduleUserRepository;
         }
 
         [HttpGet]
@@ -49,10 +47,10 @@ namespace project_is.Controllers
         [HttpDelete]
         public async Task<IActionResult> Delete([FromQuery] ScheduleUserDeleteRequest request)
         {
-            var result = await scheduleUserRepository.DeleteDriverFromSchedule(request.IdUser, request.IdSchedule);
-            if (result)
-                return Ok(result);
-            return BadRequest(new { msg = "can not delete this driver" });
+            var result = await mediator.Send(new DeleteScheduleUserCommand(request));
+            if (result.IsSuccess)
+                return Ok(result.IsSuccess);
+            return BadRequest(result.Errors.FirstOrDefault());
         }
 
         [HttpPut("{id}")]
@@ -67,8 +65,10 @@ namespace project_is.Controllers
         [HttpPost("driverSchedule")]
         public async Task<IActionResult> GetDriversSchedule([FromBody] ScheduUserCheckRequest request)
         {
-            var result = await scheduleUserRepository.checkAvailability(request);
-            return Ok(result);
+            var result = await mediator.Send(new GetDriverScheduleQuery(request));
+            if(result.IsSuccess)
+            return Ok(result.IsSuccess);
+            return BadRequest(result.IsSuccess);
         }
     }
 }

@@ -63,8 +63,8 @@ namespace project_is.Controllers
         [HttpGet("drivers")]
         public async Task<IActionResult> GetDrivers()
         {
-            var list = await userRepository.getDriver();
-            return Ok(list);
+            var list = await mediator.Send(new GetDriverQuery());
+            return Ok(list.Data);
         }
 
         [HttpPost("forgot-password")]

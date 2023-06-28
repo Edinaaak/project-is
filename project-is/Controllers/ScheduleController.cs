@@ -11,11 +11,9 @@ namespace project_is.Controllers
     public class ScheduleController : ControllerBase
     {
         private readonly IMediator mediator;
-        private readonly IUnitOfWork unitOfWork;
-        public ScheduleController(IMediator mediator, IUnitOfWork unitOfWork)
+        public ScheduleController(IMediator mediator)
         {
             this.mediator = mediator;
-            this.unitOfWork = unitOfWork;
         }
 
         [HttpGet]
@@ -66,8 +64,10 @@ namespace project_is.Controllers
         [HttpGet("schedule-user/{id}")]
         public async Task<IActionResult> getScheduleWithDrivers(int id)
         {
-            var list = await unitOfWork.scheduleRepository.GetWithDrivers(id);
-            return Ok(list);
+            var list = await mediator.Send(new GetScheduleWithDriverQuery(id));
+            if(list.IsSuccess)
+            return Ok(list.Data);
+                return BadRequest(list.Errors.FirstOrDefault());
         }
     }
 }

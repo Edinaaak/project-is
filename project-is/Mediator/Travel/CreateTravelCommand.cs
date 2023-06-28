@@ -22,6 +22,18 @@ namespace project_is.Mediator.Travel
 
         public async Task<Result<bool>> Handle(CreateTravelCommand request, CancellationToken cancellationToken)
         {
+            
+            var travelList = await unitOfWork.travelRepository.GetTravelsByBus(request.request.BusId);
+            foreach(var travelInList in travelList)
+            {
+                if (travelInList.TravelDate == request.request.TravelDate)
+                    return new Result<bool>
+                    {
+                        Errors = new List<string> { "This bus is busy for that date" },
+                        IsSuccess = false
+                    };
+
+            }
             var travel = mapper.Map<BusLine.Data.Models.Travel>(request.request);
             await unitOfWork.travelRepository.AddAsync(travel);
             var result = await unitOfWork.CompleteAsync();

@@ -1,10 +1,11 @@
 ﻿using BusLine.Contracts.Models;
+using BusLine.Contracts.Models.Schedule;
 using BusLine.Infrastructure;
 using MediatR;
 
 namespace project_is.Mediator.ScheduleUser
 {
-    public record DeleteScheduleUserCommand (int id) : IRequest<Result<bool>>
+    public record DeleteScheduleUserCommand (ScheduleUserDeleteRequest request) : IRequest<Result<bool>>
     {
     }
 
@@ -18,17 +19,14 @@ namespace project_is.Mediator.ScheduleUser
 
         public async Task<Result<bool>> Handle(DeleteScheduleUserCommand request, CancellationToken cancellationToken)
         {
-            var scheduleUser = await unitOfWork.scheduleUserRepository.GetByIdAsync(request.id);
-            if (scheduleUser == null)
+            var result = await unitOfWork.scheduleUserRepository.DeleteDriverFromSchedule(request.request.IdUser, request.request.IdSchedule);
+            if (!result)
                 return new Result<bool>
                 {
-                    Errors = new List<string> { "this record does not exist" },
+                    Errors = new List<string> { "this record can not delete" },
                     IsSuccess = false,
                 };
-            var result = await unitOfWork.scheduleUserRepository.RemoveAsync(scheduleUser);
-            if (result)
-                return new Result<bool> { IsSuccess = true };
-            return new Result<bool> { IsSuccess = false };
+            return new Result<bool> { IsSuccess = true };
 
         }
     }

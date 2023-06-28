@@ -11,9 +11,11 @@ namespace project_is.Controllers
     public class BuslineController : ControllerBase
     {
         private readonly IMediator mediator;
-        public BuslineController(IMediator mediator)
+        private readonly ILogger<BuslineController> logger;
+        public BuslineController(IMediator mediator, ILogger<BuslineController> logger)
         {
             this.mediator = mediator;
+            this.logger = logger;
         }
         [HttpGet]
         public async Task<IActionResult> GetAll()
@@ -21,6 +23,7 @@ namespace project_is.Controllers
             var result = await mediator.Send(new GetBuslinesQuery());
             if(!result.IsSuccess)
                 return BadRequest(result.Errors.FirstOrDefault());
+            logger.LogInformation($"num of buslines is {result.Data.Count()}");
             return Ok(result.Data);
         }
 

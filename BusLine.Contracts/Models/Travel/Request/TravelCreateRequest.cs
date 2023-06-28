@@ -13,7 +13,7 @@ namespace BusLine.Contracts.Models.Travel.Request
         
         public DateTime TravelDate { get; set; }
         public int ScheduleId { get; set; }
-        public int? BusId { get; set; }
+        public int BusId { get; set; }
 
     }
 }

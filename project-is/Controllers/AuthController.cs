@@ -10,9 +10,11 @@ namespace project_is.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IMediator mediator;
-        public AuthController(IMediator mediator)
+        private readonly ILogger<AuthController> logger;
+        public AuthController(IMediator mediator, ILogger<AuthController> logger)
         {
             this.mediator = mediator;
+            this.logger = logger;
         }
 
         [HttpPost]
@@ -21,8 +23,14 @@ namespace project_is.Controllers
         {
             var result = await mediator.Send(new RegisterUserCommand(request));
             if (!result.IsSuccess)
+            {
+                logger.LogError("fail registration");
                 return BadRequest(result.Errors.FirstOrDefault());
+                
+            }
+            logger.LogInformation("successfully register");
             return Ok(result.Data);
+
         }
 
 
